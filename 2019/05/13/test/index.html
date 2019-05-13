@@ -7,14 +7,18 @@
   
   <title>test | Hexo</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta property="og:type" content="article">
+  <meta name="description" content="##快速排序的各种优化 ###无优化 以数组的第一个值为基准值123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778package sort;import ja">
+<meta name="keywords" content="this is test page">
+<meta property="og:type" content="article">
 <meta property="og:title" content="test">
 <meta property="og:url" content="http://yoursite.com/2019/05/13/test/index.html">
 <meta property="og:site_name" content="Hexo">
+<meta property="og:description" content="##快速排序的各种优化 ###无优化 以数组的第一个值为基准值123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778package sort;import ja">
 <meta property="og:locale" content="default">
-<meta property="og:updated_time" content="2019-05-13T11:59:30.619Z">
+<meta property="og:updated_time" content="2019-05-13T12:10:36.607Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="test">
+<meta name="twitter:description" content="##快速排序的各种优化 ###无优化 以数组的第一个值为基准值123456789101112131415161718192021222324252627282930313233343536373839404142434445464748495051525354555657585960616263646566676869707172737475767778package sort;import ja">
   
     <link rel="alternate" href="/atom.xml" title="Hexo" type="application/atom+xml">
   
@@ -83,13 +87,17 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        
+        <p>##快速排序的各种优化</p>
+<p>###无优化 以数组的第一个值为基准值<br><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br></pre></td><td class="code"><pre><span class="line">package sort;</span><br><span class="line"></span><br><span class="line">import java.util.Random;</span><br><span class="line"></span><br><span class="line">public class QuickSort implements Sort &#123;</span><br><span class="line">Random random = new Random();</span><br><span class="line">	/**</span><br><span class="line">	 * 快速排序</span><br><span class="line">	 * </span><br><span class="line">	 * @param arr</span><br><span class="line">	 *            :要排序的数组</span><br><span class="line">	 */</span><br><span class="line">	@Override</span><br><span class="line">	public void sort(int[] arr) &#123;</span><br><span class="line">		quickSort(arr, 0, arr.length - 1);</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 执行快速排序的主函数</span><br><span class="line">	 * </span><br><span class="line">	 * @param arr</span><br><span class="line">	 *            :要排序的数组</span><br><span class="line">	 * @param l</span><br><span class="line">	 *            :左下标</span><br><span class="line">	 * @param r</span><br><span class="line">	 *            :右下标</span><br><span class="line">	 */</span><br><span class="line">	private void quickSort(int[] a, int l, int r) &#123;</span><br><span class="line">		<span class="keyword">if</span> (l &lt; r) &#123;</span><br><span class="line">			int pIndex = partition1(a, l, r);</span><br><span class="line"></span><br><span class="line">			// 注意：基准值已经排好，不需要再改变位置</span><br><span class="line">			quickSort(a, l, pIndex - 1);</span><br><span class="line">			quickSort(a, pIndex + 1, r);</span><br><span class="line">		&#125;</span><br><span class="line">	&#125;</span><br><span class="line"></span><br><span class="line">	/**</span><br><span class="line">	 * 将数组按pivot(基准值)分为左右两个，左边比基准值小，右边比基准值大 这里基准值取数组的第一个元素</span><br><span class="line">	 * 这里会产生一个问题：处理已经是正序或反序的数组，递归次数过多的情况</span><br><span class="line">	 * </span><br><span class="line">	 * @param arr</span><br><span class="line">	 *            :要排序的数组</span><br><span class="line">	 * @param i</span><br><span class="line">	 *            :左下标</span><br><span class="line">	 * @param j</span><br><span class="line">	 *            :右下标</span><br><span class="line">	 * @<span class="built_in">return</span></span><br><span class="line">	 */</span><br><span class="line">	private int partition1(int[] a, int i, int j) &#123;</span><br><span class="line">		// 设置基准值</span><br><span class="line">		//int pivot = a[i]; // 把基准值设为开始值</span><br><span class="line">		//int pivot = a[(i+j)/2];//把基准值设为中间值，比quickSort略低</span><br><span class="line">		int pivot=a[random.nextInt(j-i)+i];//随机数中值，是quickSort的两倍时间(顺序或反序)</span><br><span class="line">		// 对数组按基准值进行分离</span><br><span class="line">		<span class="keyword">while</span> (i &lt; j) &#123;</span><br><span class="line"></span><br><span class="line">			// 先分离右边</span><br><span class="line">			<span class="keyword">while</span> (i &lt; j &amp;&amp; a[j] &gt; pivot) &#123;</span><br><span class="line">				j--;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (i &lt; j) &#123;</span><br><span class="line">				a[i++] = a[j];</span><br><span class="line">			&#125;</span><br><span class="line"></span><br><span class="line">			// 分离左边</span><br><span class="line">			<span class="keyword">while</span> (i &lt; j &amp;&amp; a[i] &lt; pivot) &#123;</span><br><span class="line">				i++;</span><br><span class="line">			&#125;</span><br><span class="line">			<span class="keyword">if</span> (i &lt; j) &#123;</span><br><span class="line">				a[j--] = a[i];</span><br><span class="line">			&#125;</span><br><span class="line">		&#125;</span><br><span class="line">		a[i] = pivot;</span><br><span class="line"></span><br><span class="line">		<span class="built_in">return</span> i;</span><br><span class="line">	&#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+
       
     </div>
     <footer class="article-footer">
-      <a data-url="http://yoursite.com/2019/05/13/test/" data-id="cjvmbgdve0001jkz0uq5bgr3y" class="article-share-link">Share</a>
+      <a data-url="http://yoursite.com/2019/05/13/test/" data-id="cjvmbtv5r0001lkz0t0jet8hl" class="article-share-link">Share</a>
       
       
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/this-is-test-page/">this is test page</a></li></ul>
+
     </footer>
   </div>
   
@@ -115,9 +123,23 @@
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tags</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/this-is-test-page/">this is test page</a></li></ul>
+    </div>
+  </div>
+
 
   
     
+  <div class="widget-wrap">
+    <h3 class="widget-title">Tag Cloud</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/this-is-test-page/" style="font-size: 10px;">this is test page</a>
+    </div>
+  </div>
+
   
     
   <div class="widget-wrap">
